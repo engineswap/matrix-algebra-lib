@@ -1,6 +1,5 @@
 #include "../include/matrix.hpp"
 #include <cassert>
-
 void test_dimensions() {
     cout << "Running test_dimensions\n";
     Matrix m1(2, 3);
@@ -97,17 +96,30 @@ void test_scalar_divide() {
 void test_matrix_mult() {
     cout << "Running test_matrix_mult\n";
 
+    // 2x2 * 2x2
     Matrix m1("1 2;3 4");
     Matrix m2("5 6;0 7");
     Matrix answer("5 20;15 46");
 
-    assert(m1 * m2 == answer);
+    assert(m1.naive_mult(m2) == answer);
+    assert(m1.divide_and_conquer_mult(m2, false) == answer);
+    assert(m1.divide_and_conquer_mult(m2, true) == answer);
 
-    Matrix m3("1 2 3; 4 5 6");         // 2x3 matrix
-    Matrix m4("7 8; 9 10; 11 12");     // 3x2 matrix
-    Matrix answer_2("58 64; 139 154"); // Expected 2x2 result
+    // 3x3 * 3x3
+    Matrix m3("1 2 3; 4 5 6; 7 8 9");
+    Matrix m4("9 8 7; 6 5 4; 3 2 1");
+    Matrix answer_2("30 24 18; 84 69 54; 138 114 90");
 
-    assert(m3 * m4 == answer_2);
+    assert(m3.naive_mult(m4) == answer_2);
+    assert(m3.divide_and_conquer_mult(m4, false) == answer_2);
+    assert(m3.divide_and_conquer_mult(m4, true) == answer_2);
+    
+    // 2x3 * 3x2
+    Matrix m5("1 2 3; 4 5 6");         // 2x3 matrix
+    Matrix m6("7 8; 9 10; 11 12");     // 3x2 matrix
+    Matrix answer_3("58 64; 139 154"); // Expected 2x2 result
+
+    assert(m5.naive_mult(m6) == answer_3);
 }
 
 int main() {

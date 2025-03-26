@@ -7,7 +7,10 @@
 #include <string>
 #include <tuple>
 #include <vector>
+#include <random>
 using namespace std;
+
+using FloatMatrix = vector<vector<float>>;
 
 class Matrix {
   private:
@@ -17,6 +20,9 @@ class Matrix {
   public:
     Matrix(string str);
     Matrix(int rows, int cols);
+    Matrix(const FloatMatrix& mat);
+
+    void random_init();
 
     friend ostream &operator<<(ostream &os, const Matrix &obj);
 
@@ -44,7 +50,21 @@ class Matrix {
     }
 
     // matrix *
-    Matrix operator*(Matrix m2) const;
+    Matrix naive_mult(const Matrix& m2) const;
+    Matrix divide_and_conquer_mult(const Matrix& m2, bool strassen) const;
+    
+    static FloatMatrix divide_and_conquer_mult_helper(const FloatMatrix& m1, const FloatMatrix& m2);
+    static FloatMatrix strassen_mult_helper(const FloatMatrix& m1, const FloatMatrix& m2);
+    static FloatMatrix add(const FloatMatrix& m1, const FloatMatrix& m2);
+    static FloatMatrix subtract(const FloatMatrix& m1, const FloatMatrix& m2);
+    static FloatMatrix multiply(const FloatMatrix& m1, const FloatMatrix& m2); // naive n^3 loop
+    static array<FloatMatrix, 4> break_matrix_into_quadrants(const FloatMatrix &mat);
+    static FloatMatrix combine_quadrants(const FloatMatrix &topLeft,
+                              const FloatMatrix &topRight,
+                              const FloatMatrix &bottomLeft,
+                              const FloatMatrix &bottomRight);
+
+
 
     // matrix +,-
 
@@ -55,6 +75,9 @@ class Matrix {
     // row len, col len
     int get_rows() const { return m_data.size(); }
     int get_cols() const { return m_data[0].size(); }
+
+    // get 2d matrix
+    const vector<vector<float>>& get_matrix() const { return m_data; }
 
     // transpose
     Matrix transpose();
